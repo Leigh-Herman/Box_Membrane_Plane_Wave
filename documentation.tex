@@ -328,5 +328,53 @@ In summary, the 3D simulation illustrates the following key aspects of the membr
 
 This 3D visualization provides a comprehensive understanding of the complex interactions between an external wave source and a stretched membrane. By observing the displacement variations and wave patterns in the 3D perspective, the simulation offers insights into wave propagation, interference, and damping effects in a continuous medium.
 
+\section{3D Volume Simulation of the Membrane}
+
+To further extend the membrane simulation, we added a third spatial dimension ($z$) to represent the membrane as a true 3D volume rather than a 2D plane. This modification allows for wave propagation in all three spatial directions ($x$, $y$, and $z$), enhancing the complexity and realism of the simulation.
+
+\subsection{3D Grid Setup}
+The membrane volume is represented by a 3D grid with dimensions $L_x \times L_y \times L_z$. The grid resolution is specified by $N_x$, $N_y$, and $N_z$ points along each dimension, resulting in a grid spacing of:
+\[
+\Delta x = \frac{L_x}{N_x - 1}, \quad \Delta y = \frac{L_y}{N_y - 1}, \quad \Delta z = \frac{L_z}{N_z - 1}
+\]
+In this setup, each point $(i, j, k)$ in the grid corresponds to a specific displacement value $u_{i, j, k}$ that evolves over time according to the 3D wave equation.
+
+\subsection{3D Wave Equation}
+The wave equation was extended to 3D by incorporating a third term to account for wave propagation along the $z$-axis. The finite difference update rule for each point in the 3D grid is given by:
+\[
+u_{i, j, k}^{n+1} = 2 u_{i, j, k}^n - u_{i, j, k}^{n-1} + \text{CFL}^2 \left( \frac{u_{i+1, j, k}^n - 2 u_{i, j, k}^n + u_{i-1, j, k}^n}{\Delta x^2} + \frac{u_{i, j+1, k}^n - 2 u_{i, j, k}^n + u_{i, j-1, k}^n}{\Delta y^2} + \frac{u_{i, j, k+1}^n - 2 u_{i, j, k}^n + u_{i, j, k-1}^n}{\Delta z^2} \right)
+\]
+where $u_{i, j, k}^{n+1}$ represents the displacement at grid point $(i, j, k)$ at the next time step $(n+1)$.
+
+\subsection{Boundary Conditions in 3D}
+To simulate realistic boundary behavior, damping was applied to all six faces of the 3D volume, specifically on the boundaries along the $x$, $y$, and $z$ dimensions. The boundary damping factor was set to 0.95, reducing the amplitude of the wave at the edges and minimizing reflections. An additional domain-wide damping factor (0.999) was also applied across the entire 3D grid to simulate energy dissipation over time.
+
+\subsection{Visualization of the 3D Membrane}
+Visualizing the full 3D volume can be challenging, so a single 2D slice along the $z$-axis was chosen for display in a 3D surface plot. The slice was taken at the midpoint of the $z$-axis ($z = L_z / 2$) and plotted as a 3D surface. This slice displays the membrane's displacement in the $x$-$y$ plane while providing depth to indicate the amplitude of the displacement.
+
+The visualization settings were as follows:
+\begin{itemize}
+    \item \textbf{3D Surface Plot}: A 3D surface plot of the displacement was generated for a fixed $z$-slice at $z = L_z / 2$.
+    \item \textbf{Color Map and Range}: The \texttt{viridis} color map was used, with a color range of \texttt{vmin = -0.05} and \texttt{vmax = 0.05}, to highlight variations in displacement.
+    \item \textbf{Viewing Angle}: The viewing angle was set to an elevation of 30° and an azimuth of 135° to provide an optimal perspective.
+\end{itemize}
+
+\subsection{Animation of the 3D Volume Simulation}
+The 3D membrane simulation was animated using \texttt{FuncAnimation}, with each frame representing an update of the membrane’s displacement in the selected $z$-slice. The animation was saved as a GIF file, \texttt{membrane\_simulation\_3D\_surface.gif}, for easy visualization. The settings used for the animation include:
+\begin{itemize}
+    \item \textbf{Frame Interval}: Each frame interval was set to 20 ms.
+    \item \textbf{Frame Rate}: The frame rate was set to 30 fps for a smooth visualization.
+\end{itemize}
+
+\subsection{Summary of Observations}
+In this 3D volume simulation, we observe:
+\begin{itemize}
+    \item The propagation of a plane wave from the left boundary through a 3D volume.
+    \item The interaction of the wave with all boundaries, where damping reduces reflections and dissipates energy over time.
+    \item Complex wave interference patterns that form due to the 3D propagation and boundary effects.
+\end{itemize}
+
+The addition of a third dimension provides a more realistic and immersive representation of wave dynamics within a 3D membrane, capturing the effects of boundary damping, energy dissipation, and wave interference in a volumetric setting.
+
 
 \end{document}
