@@ -159,4 +159,123 @@ All code and documentation files were committed to GitHub for version control. T
 \end{itemize}
 
 
+\section{Simulation with a Traveling Plane Wave Source}
+
+In this extension of the membrane simulation, a traveling plane wave source was introduced to create a more dynamic interaction with the membrane. The plane wave propagates horizontally across the grid from the left boundary and interacts with the membrane.
+
+\subsection{Plane Wave Source}
+The plane wave source is implemented as a sinusoidal wave traveling along the x-axis, applied to the left boundary of the grid:
+\[
+u_{\text{next}}[0, j] = A \sin\left( \omega t - \frac{2 \pi}{L_x} v t \right)
+\]
+where:
+\begin{itemize}
+    \item $A$ is the amplitude of the wave, set to 0.005,
+    \item $\omega$ is the angular frequency of the wave, with a frequency of 5 Hz,
+    \item $L_x$ is the length of the membrane along the x-axis,
+    \item $v$ is the wave speed along the x-axis.
+\end{itemize}
+
+This plane wave source, applied only to the left boundary, simulates an incoming wave that travels across empty space to interact with the membrane.
+
+\subsection{Final Adjustments and Damping}
+We included light damping across the entire grid to dissipate energy and prevent excessive oscillations, along with damping at the boundaries to simulate energy dissipation at the edges.
+
+\subsection{Animation of the Simulation}
+The dynamics were visualized using the \texttt{matplotlib.animation} module, which updates the displacement of the membrane at each time step and produces an animated GIF file showing the membrane’s response to the traveling plane wave.
+
+The following settings were used for the animation:
+\begin{itemize}
+    \item \textbf{Frame Interval:} 20 ms per frame.
+    \item \textbf{FPS (Frames Per Second):} 30 fps for smooth visualization.
+    \item \textbf{Output Format:} Saved as a GIF using the Pillow library.
+\end{itemize}
+
+\subsection{Code Organization and Repository Management}
+The following files are included in the repository:
+\begin{itemize}
+    \item \texttt{simulation2.py}: Python script for the plane wave simulation with animation.
+    \item \texttt{documentation.tex}: LaTeX documentation detailing the simulation setup, adjustments, and findings.
+    \item \texttt{membrane\_simulation\_with\_plane\_wave.gif}: The animation showing the traveling plane wave interacting with the membrane.
+\end{itemize}
+
+These additions provide a dynamic visualization of wave interactions with a membrane, demonstrating complex wave behavior in response to an incoming plane wave.
+
+\section{Enhanced Visualization of Plane Wave Interaction with Membrane}
+
+To improve the visibility of the plane wave and its interaction with the membrane, several adjustments were made to the simulation:
+
+\subsection{Increased Amplitude of the Plane Wave}
+The amplitude of the plane wave source was increased to 0.02, making the incoming wave more noticeable as it propagates across the membrane. This higher amplitude enhances the wave's visibility and its impact on the membrane’s displacement.
+
+\subsection{Pulsing Effect at the Source Boundary}
+A pulsing effect was added to the amplitude of the plane wave at the left boundary to highlight each incoming wave pulse. The amplitude of the wave source now varies periodically according to:
+\[
+\text{pulse\_factor} = 1.0 + 0.5 \sin\left(\frac{\text{frame}}{10}\right)
+\]
+This pulsing effect modulates the amplitude of the wave along the boundary, visually emphasizing the origin of the wave as it interacts with the membrane.
+
+\subsection{Boundary Highlight Line}
+To indicate the location of the plane wave source, a red vertical line was added at the left boundary of the membrane (at $x = 0$). This line serves as a visual marker to help the viewer identify where the plane wave originates. This line is drawn using \texttt{ax.vlines} in \texttt{matplotlib}, with the following properties:
+\begin{itemize}
+    \item \textbf{Position:} $x = 0$
+    \item \textbf{Color:} Red
+    \item \textbf{Thickness:} 2 pixels
+\end{itemize}
+
+\subsection{Adjusted Color Map Range}
+The color map range was narrowed to focus on smaller displacements, making subtle changes in the membrane’s displacement more visible. The color range was set to:
+\[
+\text{vmin} = -0.05, \quad \text{vmax} = 0.05
+\]
+This adjustment increases the sensitivity of the color map, allowing small displacements caused by the wave interaction to be more easily observed.
+
+\subsection{Final Animation}
+The enhanced animation was saved as a GIF file titled \texttt{membrane\_simulation\_with\_plane\_wave.gif}. This animation captures the dynamic interaction between the incoming plane wave and the membrane, with the above enhancements improving the overall clarity and visualization.
+
+\section{Code and Repository Management}
+The updated code and animation were added to the project repository. The following files are included:
+\begin{itemize}
+    \item \texttt{simulation2.py}: Updated Python script with enhanced plane wave visualization.
+    \item \texttt{documentation.tex}: LaTeX documentation with details on the simulation setup and visualization adjustments.
+    \item \texttt{membrane\_simulation\_with\_plane\_wave.gif}: Final animation showing the interaction of the plane wave with the membrane.
+\end{itemize}
+
+These changes make the interaction between the plane wave and the membrane clearer and visually informative, allowing for a better understanding of the dynamic behavior.
+
+
+\section{3D Visualization of the Membrane Simulation}
+
+To provide a more intuitive visualization of the membrane's dynamics, we implemented a 3D surface plot that displays the displacement over time. This setup gives a sense of depth, allowing us to better observe the interactions between the traveling plane wave and the membrane.
+
+\subsection{3D Surface Plot Setup}
+The 3D visualization was achieved using \texttt{matplotlib}'s 3D plotting capabilities, specifically the \texttt{plot\_surface} function. This function plots the membrane displacement values as a dynamic 3D surface.
+
+\subsection{Visualization Enhancements}
+The following adjustments were made to enhance the clarity of the 3D visualization:
+\begin{itemize}
+    \item \textbf{View Angle Adjustment:} The initial view angle was set using \texttt{ax.view\_init(elev=30, azim=135)} to provide an optimal perspective of the membrane’s surface, emphasizing both depth and displacement.
+    \item \textbf{Color Map and Range:} The color map was set to \texttt{viridis}, with a narrower color range (\texttt{vmin} = -0.05, \texttt{vmax} = 0.05) to make smaller displacements more noticeable.
+    \item \textbf{3D Axis Labels and Limits:} The x, y, and z axes were labeled as "X", "Y", and "Displacement," respectively. The z-axis limits were set to [-0.05, 0.05] to emphasize the wave-induced membrane deformations.
+\end{itemize}
+
+\subsection{Animation of the 3D Surface}
+The 3D animation was created using \texttt{FuncAnimation}, with the surface plot updated for each frame of the simulation:
+\begin{itemize}
+    \item Each frame clears the previous surface plot and redraws it with the latest displacement values.
+    \item The animation is saved as a GIF file, \texttt{membrane\_simulation\_3D.gif}, for easy viewing.
+    \item The frame interval was set to 20 ms with a frame rate of 30 fps to ensure smooth visualization.
+\end{itemize}
+
+\subsection{Code and Repository Management}
+The 3D simulation code and documentation were added to the project repository with the following files:
+\begin{itemize}
+    \item \texttt{simulation3d.py}: Python script for the 3D visualization of the membrane simulation.
+    \item \texttt{documentation.tex}: LaTeX documentation detailing the 3D visualization setup and adjustments.
+    \item \texttt{membrane\_simulation\_3D.gif}: The final animated GIF file showing the 3D dynamics of the membrane.
+\end{itemize}
+
+The 3D visualization provides a more immersive view of the membrane dynamics, allowing for a clearer understanding of wave interactions and membrane displacement.
+
+
 \end{document}
