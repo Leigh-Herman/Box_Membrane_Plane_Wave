@@ -1,1 +1,37 @@
-"\documentclass{article}\n\begin{document}\n\title{Box Membrane - Plane Wave Project}\n\author{}\n\date{}\n\maketitle\n\section{Introduction}\nThis document will track all development steps for the project.\n\end{document}" 
+\documentclass{article}
+\begin{document}
+
+\title{Box Membrane - Plane Wave Project}
+\author{}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+This document will track all steps in the development of the Box Membrane - Plane Wave project. The project consists of two main phases:
+\begin{itemize}
+    \item \textbf{Phase 1:} Setting up the numerical solutions for the wave equation on a stretched membrane.
+    \item \textbf{Phase 2:} Using the numerical results to animate the interaction in Blender.
+\end{itemize}
+
+\section{Project Setup}
+The project directory was created, and version control was initialized with Git. The project was then linked to a GitHub repository for remote access.
+
+\section{Numerical Solution Setup}
+
+We begin by defining the necessary parameters for simulating the wave equation on a rectangular membrane.
+
+\subsection{Simulation Parameters}
+The membrane dimensions are set to 1m by 1m, and the wave speed is chosen to be 1 m/s. The grid is discretized into 100 points along each dimension, resulting in a grid spacing of $\Delta x = \Delta y = 0.01$ m. We use a time step of $\Delta t = 0.001$ s for stability. 
+
+\subsection{Initialization of Displacement Arrays}
+Three displacement arrays are initialized:
+\begin{itemize}
+    \item $u$: Displacement at the current time step.
+    \item $u_{\text{prev}}$: Displacement at the previous time step.
+    \item $u_{\text{next}}$: Displacement at the next time step.
+\end{itemize}
+
+The initial conditions are set so that the membrane is at rest, with zero initial displacement and velocity.
+
+
+\end{document}
