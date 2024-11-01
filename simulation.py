@@ -1,12 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 
 # Simulation parameters
 Lx, Ly = 1.0, 1.0
-Nx, Ny = 50, 50             # Reduced grid resolution for stability
+Nx, Ny = 50, 50             # Grid resolution
 dx, dy = Lx / (Nx - 1), Ly / (Ny - 1)
 c = 1.0
-dt = 0.00001                   # Smaller time step for stability
+dt = 0.00025                   # Smaller time step for stability
 T = 1.0
 Nt = int(T / dt)
 
@@ -16,10 +17,10 @@ u_prev = np.zeros((Nx, Ny))
 u_next = np.zeros((Nx, Ny))
 
 # Configuration options
-use_source = False             # Enable or disable source term
+use_source = True             # Enable or disable source term
 use_gaussian_initial = True   # Enable or disable Gaussian initial condition
-damping_boundaries = True      # Enable or disable damping at boundaries
-damping_inside_domain = True   # Enable light damping across the domain
+damping_boundaries = True     # Enable or disable damping at boundaries
+damping_inside_domain = True  # Enable light damping across the domain
 
 # Parameters for the source term
 A = 0.005             # Source amplitude
@@ -45,16 +46,21 @@ if cfl > 1.0:
     print("Warning: CFL condition exceeded. Adjust dt or dx for stability.")
     exit()
 
-# Time-stepping loop
-for n in range(1, Nt):
+# Set up the figure and axis
+fig, ax = plt.subplots()
+cax = ax.imshow(u, extent=[0, Lx, 0, Ly], origin='lower', cmap='viridis', vmin=-0.1, vmax=0.1)
+fig.colorbar(cax, label="Displacement")
+
+# Update function for animation
+def update(frame):
+    global u, u_prev, u_next
     # Apply source term if enabled
     if use_source:
-        # Avoid accumulation directly on u
-        u[i_src, j_src] = A * np.sin(omega * n * dt)
+        u_next[i_src, j_src] = A * np.sin(omega * frame * dt)
 
+    # Time-stepping finite difference calculation
     for i in range(1, Nx - 1):
         for j in range(1, Ny - 1):
-            # Finite difference approximation
             u_next[i, j] = (
                 2 * u[i, j] - u_prev[i, j]
                 + (cfl ** 2) * (
@@ -80,22 +86,15 @@ for n in range(1, Nt):
     u_prev[:, :] = u[:, :]
     u[:, :] = u_next[:, :]
 
-    # Diagnostic check for blow-up
-    if np.any(np.abs(u) > 1e3):  # Threshold to catch instability
-        print(f"Warning: Instability detected at time step {n}")
-        break
+    # Update the image data for animation
+    cax.set_array(u)
+    ax.set_title(f"Time Step {frame}")
+    return [cax]
 
-    # Visualization every 100 time steps
-    if n % 100 == 0:
-        plt.imshow(u, extent=[0, Lx, 0, Ly], origin='lower', cmap='viridis')
-        plt.colorbar(label="Displacement")
-        plt.title(f"Time Step {n}")
-        plt.pause(0.01)
-        plt.clf()
+# Create the animation
+ani = FuncAnimation(fig, update, frames=Nt, blit=True, interval=20)
 
-# Save final frame
-plt.imshow(u, extent=[0, Lx, 0, Ly], origin='lower', cmap='viridis')
-plt.colorbar(label="Displacement")
-plt.title("Final Frame of Membrane Displacement")
-plt.savefig("simulation.png")
+# Save the animation as GIF
+ani.save("membrane_simulation.gif", fps=30)
+
 plt.show()

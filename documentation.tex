@@ -122,5 +122,41 @@ The following modifications were made to improve stability and prevent runtime e
 
 These adjustments have stabilized the simulation and ensured that the wave propagates as expected without causing overflow or runtime errors.
 
+\section{Final Adjustments and Animation Setup}
+
+After stabilizing the simulation, the following adjustments were made to implement the animation and complete the simulation framework.
+
+\subsection{Animation Setup}
+The dynamics of the membrane were visualized by creating an animation. We used the \texttt{matplotlib.animation} module in Python to animate the simulation by updating the membrane’s displacement at each time step. The \texttt{FuncAnimation} class was employed to render each frame and update the membrane’s state over time.
+
+The following settings were used for the animation:
+\begin{itemize}
+    \item \textbf{Frame Interval:} Each frame represents a single time step, with a delay of 20 ms per frame.
+    \item \textbf{FPS (Frames Per Second):} We set 30 frames per second for a smooth visualization.
+    \item \textbf{Output Format:} The animation was saved as a GIF file using the \texttt{Pillow} library due to the unavailability of \texttt{ffmpeg}.
+\end{itemize}
+
+\subsection{Summary of Final Stability Adjustments}
+Several stability adjustments were applied to ensure that the simulation runs without errors:
+\begin{itemize}
+    \item \textbf{Reduced Time Step:} The time step $\Delta t$ was set to $0.00025$ to maintain stability according to the Courant-Friedrichs-Lewy (CFL) condition.
+    \item \textbf{Domain-wide Damping:} A light damping factor of 0.999 was applied across the entire grid to reduce oscillations and energy accumulation within the membrane.
+    \item \textbf{Boundary Damping:} Additional damping was applied along the boundaries of the membrane to simulate energy dissipation at the edges.
+    \item \textbf{Diagnostic Check for Instability:} A diagnostic threshold was implemented to monitor displacement values and warn of potential instabilities if displacement exceeded a predefined threshold.
+\end{itemize}
+
+These adjustments enabled the creation of a stable and visually informative animation of the membrane dynamics.
+
+\subsection{Conclusion}
+This simulation provided a comprehensive visualization of membrane dynamics in response to initial conditions and optional external forces. The final setup, along with the animation, allows for further exploration of wave interactions on a two-dimensional surface. The code and documentation have been saved to a GitHub repository for version control and collaboration.
+
+\section{Code and Repository Management}
+All code and documentation files were committed to GitHub for version control. The final repository contains:
+\begin{itemize}
+    \item \texttt{simulation.py}: The main Python script for running the membrane simulation and generating the animation.
+    \item \texttt{documentation.tex}: The LaTeX documentation file detailing the project steps, adjustments, and findings.
+    \item \texttt{simulation.gif}: The final animation showing the dynamics of the membrane.
+\end{itemize}
+
 
 \end{document}
