@@ -277,5 +277,56 @@ The 3D simulation code and documentation were added to the project repository wi
 
 The 3D visualization provides a more immersive view of the membrane dynamics, allowing for a clearer understanding of wave interactions and membrane displacement.
 
+\section{Detailed Analysis of the 3D Simulation}
+
+The 3D simulation provides an in-depth visualization of the dynamics of a stretched membrane as it interacts with an incoming plane wave. This section describes the key observations and phenomena depicted in the 3D animated GIF, \texttt{membrane\_simulation\_3D.gif}.
+
+\subsection{Initial Conditions and Plane Wave Source}
+The membrane starts at rest, with no initial displacement or velocity across its surface. A traveling plane wave is introduced at the left boundary ($x = 0$) of the membrane. This wave propagates horizontally along the x-axis, with a sinusoidal profile defined by:
+\[
+u_{\text{next}}[0, j] = A \sin\left(\omega t - \frac{2 \pi}{L_x} v t \right)
+\]
+where:
+\begin{itemize}
+    \item $A$ is the amplitude of the wave, set to 0.02 to ensure visibility in the animation.
+    \item $\omega$ is the angular frequency of the wave, determined by the specified frequency of 5 Hz.
+    \item $v$ is the wave speed, set to 1.0 m/s.
+    \item $L_x$ is the length of the membrane in the x-direction.
+\end{itemize}
+
+The wave source at the boundary simulates an external influence that continuously introduces energy into the system, creating a dynamic interaction with the membrane.
+
+\subsection{Wave Propagation Across the Membrane}
+As the plane wave enters from the left boundary, it begins to propagate across the membrane. This behavior is visually represented in the 3D plot by peaks and troughs in the surface displacement. The peaks (positive displacement) and troughs (negative displacement) vary with time, depicting the sinusoidal nature of the wave as it moves across the grid.
+
+\subsection{Interaction with the Membrane Surface}
+When the incoming plane wave interacts with the membrane:
+\begin{itemize}
+    \item \textbf{Wave Reflections}: The edges of the membrane are subject to boundary damping, which gradually reduces the energy of the wave at the edges to simulate dissipation. This damping minimizes wave reflections and gives the appearance of an "infinite" membrane, although small reflections may still be observed near the edges.
+    \item \textbf{Standing Wave Patterns}: As the plane wave continues to propagate, interference between incoming and reflected waves can lead to the formation of standing wave patterns. These patterns are visible as stationary peaks and troughs along the surface, which may oscillate in place depending on the interference conditions.
+    \item \textbf{Damping Effects}: A light domain-wide damping is applied across the entire membrane to simulate energy dissipation over time. This damping prevents runaway oscillations and allows the membrane's displacement to stabilize gradually.
+\end{itemize}
+
+\subsection{3D Visualization and Perspective}
+The 3D visualization provides a clear representation of the displacement field on the membrane:
+\begin{itemize}
+    \item The x and y axes represent the spatial dimensions of the membrane, with $x$ running horizontally and $y$ running vertically.
+    \item The z-axis shows the displacement of the membrane, where positive values indicate upward displacement (peaks) and negative values indicate downward displacement (troughs).
+    \item The color map (\texttt{viridis}) is applied to highlight the displacement, with warmer colors representing positive displacement and cooler colors representing negative displacement. This color contrast, combined with the 3D perspective, enhances the visibility of wave interactions and membrane deformation.
+\end{itemize}
+
+The viewing angle for the 3D plot is set to provide a clear perspective on both the membrane's surface deformations and the direction of wave propagation. The chosen view (elevation = 30°, azimuth = 135°) allows viewers to observe the depth of the displacement and how the wave travels across the membrane, creating a dynamic and immersive visualization of the membrane’s response to the incoming wave.
+
+\subsection{Summary of Observations}
+In summary, the 3D simulation illustrates the following key aspects of the membrane dynamics:
+\begin{itemize}
+    \item The continuous introduction of energy from the plane wave at the left boundary.
+    \item The propagation of the wave across the membrane, with clear sinusoidal peaks and troughs.
+    \item The effect of boundary and domain-wide damping, which reduces wave reflections and dissipates energy gradually.
+    \item The formation of standing wave patterns due to interference between incoming and reflected waves.
+\end{itemize}
+
+This 3D visualization provides a comprehensive understanding of the complex interactions between an external wave source and a stretched membrane. By observing the displacement variations and wave patterns in the 3D perspective, the simulation offers insights into wave propagation, interference, and damping effects in a continuous medium.
+
 
 \end{document}
