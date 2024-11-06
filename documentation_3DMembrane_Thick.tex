@@ -1,0 +1,141 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+\title{3D Membrane Simulation with Thickness}
+\author{}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+This document describes the extension of a 3D membrane simulation, adding a finite thickness to the membrane to simulate it as a physically three-dimensional structure. In this model, the membrane interacts with a plane wave source, with wave propagation occurring through all three spatial dimensions. By treating the membrane as a thick structure, we enable elastic interactions between the layers within the thickness, allowing for a more realistic and detailed simulation of wave behavior.
+
+\section{Objectives}
+
+The primary objective of this extension is to simulate a three-dimensional membrane with finite thickness in the $z$-axis. Key aspects include:
+\begin{itemize}
+    \item Defining a limited number of layers along the $z$-axis to represent thickness.
+    \item Implementing elastic coupling between adjacent layers along the $z$-axis, allowing each layer to interact with its neighbors.
+    \item Applying boundary damping to all six faces of the 3D volume to simulate energy dissipation.
+    \item Visualizing the 3D membrane by displaying slices along the $z$-axis, providing a clear view of displacement across the membrane’s thickness.
+\end{itemize}
+
+\section{Simulation Setup}
+
+\subsection{3D Grid with Thickness}
+
+The 3D membrane is represented by a finite volume with dimensions $L_x \times L_y \times L_z$, where $L_z$ represents the thickness of the membrane. The grid resolution is specified by $N_x$, $N_y$, and $N_z$ points along each axis, resulting in a grid spacing of:
+\[
+\Delta x = \frac{L_x}{N_x - 1}, \quad \Delta y = \frac{L_y}{N_y - 1}, \quad \Delta z = \frac{L_z}{N_z - 1}
+\]
+Each point $(i, j, k)$ in the grid corresponds to a displacement value $u_{i, j, k}$, which evolves over time as waves propagate through the membrane and interact with its thickness.
+
+\subsection{Elastic Coupling Between Layers}
+
+To simulate the membrane's thickness, elastic coupling is introduced between adjacent layers in the $z$-axis. This coupling enables each layer to influence its neighbors, creating a realistic 3D structure where deformation propagates across the thickness. The wave equation, modified for 3D with elastic coupling, is:
+
+\begin{align}
+u_{i, j, k}^{n+1} = & \; 2 u_{i, j, k}^n - u_{i, j, k}^{n-1} \nonumber \\
+& + \text{CFL}^2 \left( \frac{u_{i+1, j, k}^n - 2 u_{i, j, k}^n + u_{i-1, j, k}^n}{\Delta x^2} \right. \nonumber \\
+& \quad + \frac{u_{i, j+1, k}^n - 2 u_{i, j, k}^n + u_{i, j-1, k}^n}{\Delta y^2} \nonumber \\
+& \quad \left. + \frac{u_{i, j, k+1}^n - 2 u_{i, j, k}^n + u_{i, j, k-1}^n}{\Delta z^2} \right)
+\end{align}
+
+where $u_{i, j, k}^{n+1}$ represents the displacement at grid point $(i, j, k)$ at time step $n+1$. This update rule ensures that displacements in each layer of thickness interact with adjacent layers, giving the membrane realistic deformation properties.
+
+\section{Boundary Conditions in 3D}
+
+To simulate energy dissipation, damping is applied to all six faces of the 3D membrane volume, including boundaries along the $x$, $y$, and $z$ dimensions. A boundary damping factor of 0.95 is used to minimize wave reflections and dissipate energy at the edges. Additionally, a domain-wide damping factor of 0.999 is applied across the entire membrane volume, simulating gradual energy dissipation within the membrane.
+
+\section{Visualization of the 3D Membrane}
+
+Given the complexity of visualizing a 3D volume, the membrane is represented by a slice taken at a fixed $z$-layer (midpoint along the thickness). This slice is plotted as a 3D surface, allowing us to observe the wave interaction with the membrane’s thickness. The visualization settings are:
+\begin{itemize}
+    \item \textbf{3D Surface Plot}: A 3D surface plot is generated for the selected $z$-slice at $z = L_z / 2$.
+    \item \textbf{Color Map and Range}: The \texttt{viridis} color map is used with \texttt{vmin = -0.05} and \texttt{vmax = 0.05} to highlight displacement variations.
+    \item \textbf{Viewing Angle}: The plot is displayed with an elevation of 30° and an azimuth of 135° for optimal perspective.
+\end{itemize}
+
+\section{Animation of the 3D Membrane with Thickness}
+
+The 3D membrane simulation was animated using \texttt{FuncAnimation} to visualize how the plane wave interacts with the membrane over time. Each frame updates the displacement across the selected $z$-slice, creating an animated representation of the wave dynamics. The animation was saved as \texttt{membrane\_simulation\_3D\_thickness.gif} with the following settings:
+\begin{itemize}
+    \item \textbf{Frame Interval}: Set to 20 ms per frame.
+    \item \textbf{Frame Rate}: 30 fps for smooth visualization.
+\end{itemize}
+
+\section{Observations and Summary}
+
+This 3D membrane simulation with thickness captures the following key dynamics:
+\begin{itemize}
+    \item Interaction of the plane wave source with a 3D structure, allowing waves to propagate through the membrane’s thickness.
+    \item Elastic coupling between layers within the thickness, giving the membrane realistic deformation properties.
+    \item Boundary and domain-wide damping effects, simulating energy dissipation and minimizing reflections.
+\end{itemize}
+
+The addition of thickness to the membrane allows for a more accurate representation of wave behavior in a 3D medium, showcasing complex deformation and energy dissipation across all three spatial dimensions.
+
+\section{3D Membrane Simulation with Fixed Corners}
+
+In this extension, we simulate a 3D membrane with thickness and introduce fixed boundary conditions at the corners of the membrane. This modification ensures that the membrane's corners remain stationary throughout the simulation, effectively pinning these points while allowing the rest of the structure to dynamically respond to an incoming plane wave.
+
+\subsection{Objective}
+
+The goal of this modification is to create a realistic simulation of a 3D membrane with thickness, where the four corners on the top surface and four corners on the bottom surface remain fixed. This setup is suitable for simulating physical constraints where the edges or corners of a material are held in place while the remainder of the material is free to vibrate or deform in response to external forces.
+
+\subsection{Simulation Adjustments}
+
+The following adjustments were made to achieve fixed corners in the membrane:
+
+\begin{itemize}
+    \item \textbf{Corner Indices}: The eight corners of the 3D membrane are identified by their fixed coordinates along the $x$, $y$, and $z$ dimensions. These corner points are represented by the indices:
+    \[
+    (0, 0, 0), \quad (0, 0, N_z - 1), \quad (0, N_y - 1, 0), \quad (0, N_y - 1, N_z - 1)
+    \]
+    \[
+    (N_x - 1, 0, 0), \quad (N_x - 1, 0, N_z - 1), \quad (N_x - 1, N_y - 1, 0), \quad (N_x - 1, N_y - 1, N_z - 1)
+    \]
+    \item \textbf{Fixed Corner Displacements}: In each time step, the displacement values at these corner points are set to zero, effectively "pinning" the corners in place. This ensures that the corners do not move, while the rest of the membrane remains free to respond dynamically.
+\end{itemize}
+
+\subsection{Simulation Overview}
+
+This simulation models the interaction between a 3D membrane and an incoming plane wave under the following conditions:
+\begin{itemize}
+    \item \textbf{Membrane Thickness}: The membrane is represented by a 3D volume with multiple layers in the $z$-axis, giving it a box-like structure.
+    \item \textbf{Elastic Coupling}: Each layer along the $z$-axis is elastically coupled to its neighboring layers, allowing waves to propagate across the membrane's thickness.
+    \item \textbf{Plane Wave Source}: A sinusoidal plane wave is introduced at the left boundary ($x = 0$), simulating an external influence that interacts with the membrane and induces deformation across its thickness.
+\end{itemize}
+
+\subsection{Boundary Conditions}
+
+\begin{itemize}
+    \item \textbf{Fixed Corners}: The eight corner points of the membrane remain fixed throughout the simulation.
+    \item \textbf{Damping at Boundaries}: Damping is applied to the six faces of the membrane to simulate energy dissipation and reduce reflections.
+\end{itemize}
+
+\subsection{Visualization}
+
+The membrane's displacement is visualized by displaying three slices along the $z$-axis, specifically the top, middle, and bottom layers. This configuration provides a clear view of the membrane's thickness and how waves propagate through it. The visualization settings include:
+\begin{itemize}
+    \item \textbf{3D Surface Plot}: A 3D surface plot is generated for the selected $z$-slices, showing displacement in three different layers.
+    \item \textbf{Color Map and Range}: The \texttt{viridis} color map is used with a color range of \texttt{vmin = -0.05} and \texttt{vmax = 0.05} to enhance displacement visibility.
+    \item \textbf{Viewing Angle}: The plot is displayed with an elevation of 30° and an azimuth of 135° for an optimal perspective.
+\end{itemize}
+
+\subsection{Animation}
+
+The simulation is animated to show the dynamic interaction between the plane wave and the membrane. The resulting animation, saved as \texttt{membrane\_simulation\_box\_thickness\_fixed\_corners.gif}, displays the membrane’s response over time with fixed corners and is created using the following settings:
+\begin{itemize}
+    \item \textbf{Frame Interval}: Set to 20 ms per frame.
+    \item \textbf{Frame Rate}: 30 fps for smooth visualization.
+\end{itemize}
+
+
+
+\end{document}
