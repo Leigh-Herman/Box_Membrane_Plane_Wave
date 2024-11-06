@@ -1,0 +1,140 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{hyperref}
+
+\title{Alternative Numerical Methods for 3D Membrane Simulation}
+\author{}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+In the current 3D membrane simulation, we use the forward Euler method for time integration. While straightforward, forward Euler is not always the most stable or accurate choice for simulating wave dynamics, especially in 3D. This document explores alternative numerical methods for wave equations, comparing their advantages and disadvantages, and recommends a more suitable method for improved stability and accuracy.
+
+\section{Alternative Numerical Methods}
+
+The following numerical methods are commonly used for wave equations and provide enhanced accuracy or stability compared to forward Euler:
+
+\subsection{Leapfrog Method}
+
+The \textbf{leapfrog method} is a popular choice for solving wave equations. It employs a central difference scheme for both time and spatial derivatives, resulting in better stability and accuracy compared to forward Euler.
+
+\textbf{How it Works:} The leapfrog method updates the displacement at each time step using values from two previous steps, effectively "leaping" over one step at a time. It is second-order accurate in both time and space, offering greater accuracy than the first-order forward Euler method.
+
+\textbf{Advantages:}
+\begin{itemize}
+    \item Improved stability and accuracy for wave equations, particularly in preserving oscillatory behavior.
+    \item Minimal numerical damping, making it ideal for wave propagation.
+\end{itemize}
+
+\textbf{Disadvantages:}
+\begin{itemize}
+    \item Requires values from two previous time steps, which slightly increases memory requirements.
+\end{itemize}
+
+\textbf{Leapfrog Update Equation:} For a 3D wave equation, the leapfrog update rule is given by:
+\[
+u_{i,j,k}^{n+1} = 2 u_{i,j,k}^{n} - u_{i,j,k}^{n-1} + \text{CFL}^2 \left( \frac{u_{i+1, j, k}^n - 2 u_{i, j, k}^n + u_{i-1, j, k}^n}{\Delta x^2} + \frac{u_{i, j+1, k}^n - 2 u_{i, j, k}^n + u_{i, j-1, k}^n}{\Delta y^2} + \frac{u_{i, j, k+1}^n - 2 u_{i, j, k}^n + u_{i, j, k-1}^n}{\Delta z^2} \right)
+\]
+
+\subsection{Implicit Methods (Backward Euler and Crank-Nicolson)}
+
+\textbf{Implicit methods}, such as backward Euler and Crank-Nicolson, are known for their stability, especially with larger time steps. These methods require solving a system of equations at each time step, which can be computationally intensive.
+
+The \textbf{Crank-Nicolson} method is second-order accurate and balances stability with accuracy, making it a popular choice for stiff equations and larger domains.
+
+\textbf{Advantages:}
+\begin{itemize}
+    \item Extremely stable with larger time steps, especially in 3D simulations.
+    \item Provides high accuracy and stability, ideal for complex dynamics or stiff problems.
+\end{itemize}
+
+\textbf{Disadvantages:}
+\begin{itemize}
+    \item Requires solving a linear system at each time step, increasing computational complexity.
+    \item Implementation can be challenging, particularly in 3D.
+\end{itemize}
+
+\subsection{Finite Difference Time Domain (FDTD)}
+
+The \textbf{Finite Difference Time Domain (FDTD)} method is widely used in wave propagation simulations, particularly for electromagnetic and acoustic waves. It is second-order accurate in both time and space and handles complex boundary conditions well.
+
+\textbf{Advantages:}
+\begin{itemize}
+    \item High accuracy in simulating wave propagation and energy dissipation.
+    \item Works well for large domains with complex boundary conditions.
+\end{itemize}
+
+\textbf{Disadvantages:}
+\begin{itemize}
+    \item Requires fine discretization and adherence to the CFL condition, as it can become unstable if the condition is not strictly met.
+    \item Computational cost can be high compared to simpler methods like forward Euler.
+\end{itemize}
+
+\subsection{Verlet Integration (Velocity Verlet)}
+
+The \textbf{Verlet integration} method, commonly used in physical simulations, is particularly suited for systems where energy conservation is important, such as molecular dynamics. It is a second-order accurate method with good stability properties, making it a viable option for oscillatory systems like wave simulations.
+
+\textbf{Advantages:}
+\begin{itemize}
+    \item Good accuracy for oscillatory problems and second-order in time.
+    \item Simple to implement and computationally efficient.
+\end{itemize}
+
+\textbf{Disadvantages:}
+\begin{itemize}
+    \item Best suited for conservative systems without strong damping effects.
+\end{itemize}
+
+\section{Recommended Method: Leapfrog}
+
+For this 3D membrane simulation, the \textbf{leapfrog method} is recommended due to its balance between accuracy and stability, without significantly increasing computational complexity. The leapfrog method’s second-order accuracy in time and space makes it particularly well-suited for wave propagation problems, as it maintains oscillatory behavior without introducing excessive numerical damping. Furthermore, it offers better stability than forward Euler, making it ideal for larger simulations like the 3D membrane.
+
+\section{Implementation of the Leapfrog Method for 3D Membrane Simulation}
+
+To improve the stability and accuracy of the 3D membrane simulation, we implemented the \textbf{leapfrog method} as an alternative to the forward Euler approach. This section describes the details of this implementation and highlights the changes made to enhance color visualization.
+
+\subsection{Leapfrog Method Overview}
+
+The leapfrog method is a time-stepping technique that uses central differences to update displacement values in wave equations. In this method, each displacement value is updated based on the values from the two previous time steps, which improves numerical stability and accuracy. This approach also minimizes numerical damping, making it particularly suitable for simulating oscillatory systems such as wave propagation.
+
+\subsection{Simulation Adjustments}
+
+The simulation was adjusted to implement the leapfrog update rule and enhance color visualization:
+
+\begin{itemize}
+    \item \textbf{Leapfrog Update Rule:} The displacement at each grid point $(i, j, k)$ is updated using the displacements from two previous time steps ($t$ and $t-1$). This approach ensures second-order accuracy in both time and space.
+    \item \textbf{Dynamic Corners:} The fixed corner constraints from the previous simulation were removed, allowing the entire membrane to respond dynamically to the incoming plane wave.
+    \item \textbf{Enhanced Color Visualization:} To improve the visibility of displacement changes, a divergent color map (\texttt{seismic}) was applied, with a narrower range of displacement values set by \texttt{vmin = -0.02} and \texttt{vmax = 0.02}. This highlights smaller displacement variations, making the wave dynamics more visually pronounced.
+\end{itemize}
+
+\subsection{Leapfrog Update Equation}
+
+The update rule for the leapfrog method in the 3D wave equation is given by:
+\begin{align}
+u_{i,j,k}^{n+1} = &\ 2 u_{i,j,k}^{n} - u_{i,j,k}^{n-1} \nonumber \\
+& + \text{CFL}^2 \Bigg( \frac{u_{i+1, j, k}^n - 2 u_{i, j, k}^n + u_{i-1, j, k}^n}{\Delta x^2} \nonumber \\
+& + \frac{u_{i, j+1, k}^n - 2 u_{i, j, k}^n + u_{i, j-1, k}^n}{\Delta y^2} \nonumber \\
+& + \frac{u_{i, j, k+1}^n - 2 u_{i, j, k}^n + u_{i, j, k-1}^n}{\Delta z^2} \Bigg)
+\end{align}
+
+where $u_{i,j,k}^{n+1}$ is the displacement at time step $n+1$, $u_{i,j,k}^{n}$ is the displacement at the current step, and $u_{i,j,k}^{n-1}$ is the displacement from the previous time step. This rule ensures that displacement values are computed using values from two time steps prior, stabilizing the simulation and conserving oscillatory behavior.
+
+\subsection{Visualization}
+
+The simulation was enhanced by visualizing three layers along the $z$-axis to represent the membrane's thickness:
+\begin{itemize}
+    \item \textbf{3D Surface Plot:} Three slices are taken at $z = 0$, $z = L_z / 2$, and $z = L_z$ to show the top, middle, and bottom layers of the membrane, simulating a box-like thickness.
+    \item \textbf{Color Map and Range:} The \texttt{seismic} color map was applied to emphasize positive and negative displacement values, with a color range set to \texttt{vmin = -0.02} and \texttt{vmax = 0.02}.
+\end{itemize}
+
+\subsection{Resulting Animation}
+
+The resulting animation, \texttt{membrane\_simulation\_box\_thickness\_leapfrog\_enhanced\_colors.gif}, demonstrates the stable and visually enhanced dynamics of the membrane under the influence of a plane wave source. This simulation effectively captures wave propagation across the 3D membrane with the leapfrog method, while providing a clearer visualization of displacement variations.
+
+
+
+\end{document}
