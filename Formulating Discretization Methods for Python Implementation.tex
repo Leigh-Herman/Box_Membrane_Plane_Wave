@@ -1,0 +1,154 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{hyperref}
+\usepackage{geometry}
+\geometry{margin=1in}
+
+\title{Formulating Discretization Methods for Python Implementation}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+In this document, we outline the formulation of several discretization methods used for numerical integration in time-dependent problems. Each method has unique stability and accuracy properties, making them suitable for different types of problems. This document provides the mathematical formulation for each method and discusses how to implement them in Python.
+\maketitle
+
+\section{Introduction}
+The Leapfrog Method is a second-order explicit method used for numerically solving differential equations, especially for systems with oscillatory solutions. In this document, we derive the Leapfrog Method from the Taylor series expansion to provide a deeper understanding of its formulation.
+
+\subsection{Derivation of the Leapfrog Method}
+To derive the Leapfrog Method, consider the second-order ordinary differential equation:
+\begin{equation}
+    \frac{d^2 u}{dt^2} = f(u, t).
+\end{equation}
+Our goal is to approximate the solution $u(t)$ at discrete time steps $t = t_0, t_1, t_2, \dots$, with a uniform time step $\Delta t$.
+
+\subsubsection{Taylor Series Expansion}
+We start by expanding $u_{n+1} = u(t_n + \Delta t)$ and $u_{n-1} = u(t_n - \Delta t)$ around $u_n = u(t_n)$ using Taylor series:
+
+\begin{align}
+    u_{n+1} &= u_n + \Delta t \, \frac{du}{dt}\Big|_{t_n} + \frac{\Delta t^2}{2} \, \frac{d^2 u}{dt^2}\Big|_{t_n} + \frac{\Delta t^3}{6} \, \frac{d^3 u}{dt^3}\Big|_{t_n} + \mathcal{O}(\Delta t^4), \\
+    u_{n-1} &= u_n - \Delta t \, \frac{du}{dt}\Big|_{t_n} + \frac{\Delta t^2}{2} \, \frac{d^2 u}{dt^2}\Big|_{t_n} - \frac{\Delta t^3}{6} \, \frac{d^3 u}{dt^3}\Big|_{t_n} + \mathcal{O}(\Delta t^4).
+\end{align}
+
+\subsubsection{Addition of the Taylor Expansions}
+By adding the expansions for $u_{n+1}$ and $u_{n-1}$, we eliminate the first derivative term and obtain:
+\begin{equation}
+    u_{n+1} + u_{n-1} = 2 u_n + \Delta t^2 \, \frac{d^2 u}{dt^2}\Big|_{t_n} + \mathcal{O}(\Delta t^4).
+\end{equation}
+
+Now, using the differential equation $\frac{d^2 u}{dt^2} = f(u, t)$, we substitute for $\frac{d^2 u}{dt^2}$ to obtain:
+\begin{equation}
+    u_{n+1} = 2 u_n - u_{n-1} + \Delta t^2 \, f(u_n, t_n) + \mathcal{O}(\Delta t^4).
+\end{equation}
+
+\subsubsection{Leapfrog Update Formula}
+Neglecting the higher-order terms, we arrive at the Leapfrog update formula:
+\begin{equation}
+    u_{n+1} = 2 u_n - u_{n-1} + \Delta t^2 \, f(u_n, t_n).
+\end{equation}
+
+This formula expresses $u_{n+1}$ in terms of $u_n$ and $u_{n-1}$, allowing us to compute the solution at each time step.
+
+\subsection{Implementation Outline}
+To implement this in Python:
+\begin{enumerate}
+    \item Initialize $u_0$ and $u_1$ using an appropriate initial method (e.g., Forward Euler for the first step).
+    \item For each subsequent time step, compute $u_{n+1}$ using $u_n$ and $u_{n-1}$ according to the Leapfrog formula.
+\end{enumerate}
+
+\subsection{Conclusion}
+The Leapfrog Method provides a stable and efficient way to solve differential equations, especially those with oscillatory behavior. By deriving the method from the Taylor expansion, we gain insight into its accuracy and stability properties.
+
+
+\section{Leapfrog Method}
+The Leapfrog Method is a second-order accurate time-stepping scheme commonly used for solving differential equations. It is particularly useful in systems with oscillatory solutions.
+
+\subsection{Mathematical Formulation}
+Given a differential equation $\frac{d^2 u}{dt^2} = f(u, t)$, the Leapfrog Method advances in time by:
+\[
+u_{n+1} = u_{n-1} + 2 \Delta t \, f\left( u_n \right)
+\]
+where $\Delta t$ is the time step.
+
+\subsection{Implementation Outline}
+To implement this in Python:
+\begin{itemize}
+    \item Initialize $u_0$ and $u_1$ using an appropriate starting scheme (e.g., Euler's Method).
+    \item For each time step, calculate $u_{n+1}$ using $u_{n-1}$ and $u_n$.
+\end{itemize}
+
+\section{Backward Euler Method}
+The Backward Euler Method is an implicit first-order time-stepping method known for its stability. It is often used in stiff differential equations.
+
+\subsection{Mathematical Formulation}
+For the differential equation $\frac{du}{dt} = f(u, t)$, the Backward Euler formula is given by:
+\[
+u_{n+1} = u_n + \Delta t \, f(u_{n+1}, t_{n+1})
+\]
+This requires solving for $u_{n+1}$ implicitly.
+
+\subsection{Implementation Outline}
+To implement this in Python:
+\begin{itemize}
+    \item Use a root-finding algorithm like Newton's Method to solve for $u_{n+1}$ at each step.
+    \item For each time step, iterate until convergence.
+\end{itemize}
+
+\section{Crank-Nicolson Method}
+The Crank-Nicolson Method is a second-order accurate, implicit method that is a combination of the Forward Euler and Backward Euler methods, providing both stability and accuracy.
+
+\subsection{Mathematical Formulation}
+For the differential equation $\frac{du}{dt} = f(u, t)$, the Crank-Nicolson scheme is:
+\[
+u_{n+1} = u_n + \frac{\Delta t}{2} \left[ f(u_n, t_n) + f(u_{n+1}, t_{n+1}) \right]
+\]
+
+\subsection{Implementation Outline}
+To implement this in Python:
+\begin{itemize}
+    \item Use a root-finding algorithm to solve for $u_{n+1}$.
+    \item For each time step, compute $u_{n+1}$ using the iterative procedure until convergence.
+\end{itemize}
+
+\section{Finite Difference Time Domain (FDTD)}
+The FDTD method is commonly used for wave propagation problems. It uses finite differences for both spatial and temporal derivatives.
+
+\subsection{Mathematical Formulation}
+For a wave equation $\frac{\partial^2 u}{\partial t^2} = c^2 \frac{\partial^2 u}{\partial x^2}$, the FDTD update is:
+\[
+u_{n+1}^j = 2 u_n^j - u_{n-1}^j + \frac{c^2 \Delta t^2}{\Delta x^2} \left( u_n^{j+1} - 2 u_n^j + u_n^{j-1} \right)
+\]
+where $\Delta t$ and $\Delta x$ are the time and space steps, respectively.
+
+\subsection{Implementation Outline}
+To implement this in Python:
+\begin{itemize}
+    \item Define a grid in space and time.
+    \item For each time step, compute $u_{n+1}^j$ for each spatial grid point $j$ using the FDTD formula.
+\end{itemize}
+
+\section{Verlet Integration}
+Verlet Integration is commonly used for simulating systems in classical mechanics, especially where energy conservation is important.
+
+\subsection{Mathematical Formulation}
+For Newton's second law, $\frac{d^2 x}{dt^2} = a(x, t)$, the Verlet update is:
+\[
+x_{n+1} = 2 x_n - x_{n-1} + a_n \Delta t^2
+\]
+
+\subsection{Implementation Outline}
+To implement this in Python:
+\begin{itemize}
+    \item Initialize positions $x_0$ and $x_1$ using an initial velocity or a small time step.
+    \item For each time step, compute $x_{n+1}$ using $x_n$ and $x_{n-1}$.
+\end{itemize}
+
+\section{Conclusion}
+Each method presented offers different benefits depending on the nature of the problem. Implementing these in Python involves setting up loops and solving the discrete equations at each step. Proper choice of time step $\Delta t$ and, if applicable, spatial step $\Delta x$ is critical to ensure stability and accuracy.
+
+\end{document}
