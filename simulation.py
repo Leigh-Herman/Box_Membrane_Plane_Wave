@@ -96,5 +96,3 @@ ani = FuncAnimation(fig, update, frames=Nt, blit=True, interval=20)
 
 # Save the animation as GIF
 ani.save("membrane_simulation.gif", fps=30)
-
-plt.show()

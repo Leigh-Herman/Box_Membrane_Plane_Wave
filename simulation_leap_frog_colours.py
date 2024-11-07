@@ -10,7 +10,8 @@ dx, dy, dz = Lx / (Nx - 1), Ly / (Ny - 1), Lz / (Nz - 1)  # Grid spacing
 c = 1.0                        # Wave speed
 dt = 0.0001                    # Smaller time step for stability with leapfrog
 T = 1.0                        # Total simulation time
-Nt = int(T / dt)               # Number of time steps
+Nt = int(T / dt))               # Number of time steps
+
 
 # Initialize displacement arrays in 3D
 u_prev = np.zeros((Nx, Ny, Nz))    # Displacement at t-1

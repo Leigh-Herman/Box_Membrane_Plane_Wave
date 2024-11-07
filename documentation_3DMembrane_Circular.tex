@@ -1,0 +1,91 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+\title{Circular Membrane Simulation Using the Leapfrog Method}
+\author{}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+This document details the numerical implementation of a circular membrane simulation, utilizing the leapfrog method to achieve stability and accuracy in wave propagation. The membrane is modeled in 3D, with a finite thickness along the $z$-axis. A wave source is positioned at the center of the circular membrane, generating radially propagating waves that interact across the membrane's thickness.
+
+\section{Objectives}
+
+The primary objectives of this simulation are:
+\begin{itemize}
+    \item \textbf{Implement a 3D circular membrane}: Create a circular boundary within a rectangular grid to restrict wave propagation to a circular domain.
+    \item \textbf{Apply a central wave source}: Initiate waves from the center of the circular membrane to observe radial wave propagation.
+    \item \textbf{Utilize the Leapfrog Method}: Apply the leapfrog time-stepping method to improve stability and preserve wave behavior.
+    \item \textbf{Enhanced Visualization}: Utilize a divergent color map with a narrower color range to improve the visual distinction of displacement.
+\end{itemize}
+
+\section{Numerical Setup}
+
+The circular membrane simulation is modeled on a 3D rectangular grid, with a circular mask applied to enforce a circular boundary. A wave source is placed at the center of the circular region in the $x$-$y$ plane, producing a radially symmetric wave that propagates through the membrane.
+
+\subsection{Grid and Circular Boundary}
+
+The membrane has dimensions $L_x \times L_y \times L_z$, with a circular boundary defined in the $x$-$y$ plane and finite thickness along the $z$-axis:
+\begin{itemize}
+    \item \textbf{Grid Dimensions}: $N_x$, $N_y$, and $N_z$ points represent the grid in the $x$, $y$, and $z$ directions, respectively.
+    \item \textbf{Circular Mask}: The circular boundary is defined by a radius $r = 0.5L_x$, centered in the $x$-$y$ plane.
+\end{itemize}
+
+\subsection{Wave Source}
+
+The wave source is positioned at the center of the circular membrane, located at indices $(N_x/2, N_y/2)$ in the $x$-$y$ plane and extending along the $z$-axis. The wave source generates a sinusoidal pulse given by:
+\[
+u_{\text{source}} = A \sin(\omega t)
+\]
+where $A$ is the amplitude, $\omega$ is the angular frequency, and $t$ is the time. This source creates waves that propagate radially across the circular membrane.
+
+\section{Numerical Method: Leapfrog Time-Stepping}
+
+The leapfrog method is applied to update the membrane's displacement at each time step. This method is second-order accurate in time and space, providing greater stability and minimizing numerical damping.
+
+\subsection{Leapfrog Update Equation}
+
+The displacement at each point $(i, j, k)$ within the circular membrane is updated using values from the two previous time steps:
+\begin{align}
+u_{i,j,k}^{n+1} = &\ 2 u_{i,j,k}^{n} - u_{i,j,k}^{n-1} \nonumber \\
+& + \text{CFL}^2 \Bigg( \frac{u_{i+1, j, k}^n - 2 u_{i, j, k}^n + u_{i-1, j, k}^n}{\Delta x^2} \nonumber \\
+& + \frac{u_{i, j+1, k}^n - 2 u_{i, j, k}^n + u_{i, j-1, k}^n}{\Delta y^2} + \frac{u_{i, j, k+1}^n - 2 u_{i, j, k}^n + u_{i, j, k-1}^n}{\Delta z^2} \Bigg)
+\end{align}
+This equation ensures that displacement values are computed using values from two previous time steps, which enhances the stability and preserves the wave dynamics in the membrane.
+
+\subsection{Circular Boundary Condition}
+
+To restrict wave propagation within the circular boundary, a boolean mask is applied to the grid:
+\[
+\text{circular\_mask} = \left\{ (i, j) \ \middle| \ \sqrt{(x_i - x_{\text{center}})^2 + (y_j - y_{\text{center}})^2} \leq r \right\}
+\]
+where $r$ is the radius of the circular membrane. Displacements outside this circular mask are set to zero at each time step.
+
+\section{Boundary Conditions and Damping}
+
+Damping is applied to the boundary and throughout the domain to simulate energy dissipation and prevent reflections:
+\begin{itemize}
+    \item \textbf{Boundary Damping}: Applied to all six faces of the 3D membrane to absorb energy at the boundaries.
+    \item \textbf{Domain-Wide Damping}: A light damping factor is applied across the entire circular domain to gradually dissipate energy and stabilize the simulation.
+\end{itemize}
+
+\section{Visualization}
+
+To enhance visualization of the wave dynamics within the circular membrane, the following settings are applied:
+\begin{itemize}
+    \item \textbf{3D Surface Plot}: Three slices along the $z$-axis are plotted to represent the membrane's thickness.
+    \item \textbf{Divergent Color Map}: The \texttt{seismic} color map highlights positive and negative displacements with distinct colors.
+    \item \textbf{Color Range}: A narrower color range (\texttt{vmin = -0.02} and \texttt{vmax = 0.02}) is used to increase the contrast, making displacement variations more pronounced.
+\end{itemize}
+
+\section{Resulting Animation}
+
+The simulation is animated to visualize wave propagation across the circular membrane. The resulting animation, \texttt{circular\_membrane\_simulation\_leapfrog.gif}, demonstrates the radially propagating wave dynamics with enhanced color contrast and stability provided by the leapfrog method.
+
+\end{document}
